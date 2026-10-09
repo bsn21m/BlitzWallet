@@ -3,7 +3,6 @@ import {
   getSupportedMethods,
   getSupportedNotifications,
   isWithinNWCBalanceTimeFrame,
-  splitAndStoreNWCData,
 } from '.';
 import i18next from 'i18next';
 import { publishToSingleRelay } from './publishResponse';
@@ -37,6 +36,9 @@ const MAX_EVENT_AGE_SECONDS = 300;
 // point the client has likely timed out and may have retried elsewhere. Past
 // this age (and without a client-set expiration) it is answered, not paid.
 const MAX_HANDOFF_PAYMENT_AGE_SECONDS = 60;
+// Status checks (1s apart) after a pay_invoice send before giving up on
+// learning its outcome. NIP-47 has no "pending" result, so wait it out.
+const PAYMENT_STATUS_POLLS = 10;
 const DEFAULT_INVOICE_EXPIRY_SECONDS = 60 * 60 * 12;
 // Bounds per-push work from authorized clients: NIP-47 clients page with small
 // limits, so these caps never reject legitimate traffic.
@@ -443,6 +445,33 @@ const toNip47Transaction = invoice => ({
   metadata: {},
 });
 
+// Invoices created or paid by the native handler, and every OUTGOING marker,
+// carry no Spark request id; resolve a pending one from the wallet's recent
+// transfers and persist the outcome. Expects a connected wallet.
+const resolvePendingFromTransfers = async record => {
+  const transfers =
+    (await getWalletModule().getNWCSparkTransactions(50, 0))?.transfers || [];
+  const match = transfers.find(tx => {
+    const request = tx.userRequest;
+    const encoded =
+      request?.typename === 'LightningSendRequest'
+        ? request.encodedInvoice
+        : request?.invoice?.encodedInvoice;
+    return encoded === record.invoice;
+  });
+  const status = match
+    ? getSparkModule().getSparkPaymentStatus(match.status)
+    : 'pending';
+  if (status === 'pending') return record;
+  const preimage = match.userRequest?.paymentPreimage || '';
+  await NWCInvoiceManager.markInvoiceAsNotPending(
+    record.payment_hash,
+    status,
+    preimage,
+  );
+  return { ...record, status, preimage, settled_at: Date.now() };
+};
+
 const handleLookupInvoice = async (requestParams, selectedNWCAccount) => {
   let foundInvoice = null;
   try {
@@ -477,42 +506,12 @@ const handleLookupInvoice = async (requestParams, selectedNWCAccount) => {
     const wallet = getWalletModule();
     const spark = getSparkModule();
 
-    // Invoices created or paid by the native handler carry no Spark request
-    // id; resolve them from the wallet's recent transfers instead.
     if (!sparkID) {
-      const transfers =
-        (await wallet.getNWCSparkTransactions(50, 0))?.transfers || [];
-      const match = transfers.find(tx => {
-        const request = tx.userRequest;
-        const encoded =
-          request?.typename === 'LightningSendRequest'
-            ? request.encodedInvoice
-            : request?.invoice?.encodedInvoice;
-        return encoded === invoiceWithoutSparkID.invoice;
-      });
-      const matchStatus = match
-        ? spark.getSparkPaymentStatus(match.status)
-        : 'pending';
-      if (matchStatus === 'pending') {
-        return {
-          result_type: 'lookup_invoice',
-          result: toNip47Transaction(invoiceWithoutSparkID),
-        };
-      }
-      const preimage = match.userRequest?.paymentPreimage || '';
-      await NWCInvoiceManager.markInvoiceAsNotPending(
-        invoiceWithoutSparkID.payment_hash,
-        matchStatus,
-        preimage,
-      );
       return {
         result_type: 'lookup_invoice',
-        result: toNip47Transaction({
-          ...invoiceWithoutSparkID,
-          status: matchStatus,
-          preimage,
-          settled_at: Date.now(),
-        }),
+        result: toNip47Transaction(
+          await resolvePendingFromTransfers(invoiceWithoutSparkID),
+        ),
       };
     }
 
@@ -569,8 +568,8 @@ const handleLookupInvoice = async (requestParams, selectedNWCAccount) => {
 const handlePayInvoice = async (
   requestParams,
   selectedNWCAccount,
-  fullStorageObject,
   clientPubKey,
+  { stale = false } = {},
 ) => {
   const decoded = bolt11.decode(requestParams.invoice);
   const amountMsat = Number(decoded.millisatoshis);
@@ -606,6 +605,18 @@ const handlePayInvoice = async (
   } catch (err) {
     console.error('Idempotency lookup failed', err);
   }
+  if (existing?.type === 'OUTGOING' && existing.status === 'pending') {
+    // An earlier attempt (possibly a native run that was killed mid-send) may
+    // have finished since. Ask the wallet before answering.
+    const connectResponse = await ensureWalletConnection();
+    if (connectResponse.isConnected) {
+      try {
+        existing = await resolvePendingFromTransfers(existing);
+      } catch (err) {
+        console.error('Pending payment lookup failed', err);
+      }
+    }
+  }
   if (
     existing &&
     existing.type === 'OUTGOING' &&
@@ -624,6 +635,16 @@ const handlePayInvoice = async (
       'pay_invoice',
       ERROR_CODES.INTERNAL,
       'Payment already in progress',
+    );
+  }
+
+  // A handed-off request past the cap that was never sent (or failed): the
+  // client has given up on it, so never pay it late.
+  if (stale) {
+    return createErrorResponse(
+      'pay_invoice',
+      ERROR_CODES.OTHER,
+      'Request expired',
     );
   }
 
@@ -679,25 +700,12 @@ const handlePayInvoice = async (
     );
   }
 
-  // Mirrors the ledger (the source of truth) into the stored account for display.
+  // Mirrors the ledger (the source of truth) into the stored accounts for
+  // display. getNWCData re-reads storage: writing back the accounts read when
+  // this request started would undo a connection deleted or edited since.
   const syncDisplayedSpend = async () => {
     try {
-      const spend = await nwcEventLedger.getSpendState(
-        selectedNWCAccount.publicKey,
-      );
-      if (!spend) return;
-      await splitAndStoreNWCData({
-        ...fullStorageObject,
-        accounts: {
-          ...fullStorageObject.accounts,
-          [selectedNWCAccount.publicKey]: {
-            ...selectedNWCAccount,
-            totalSent:
-              (spend.budgetSentMsat - (spend.budgetSentMsat % 1000)) / 1000,
-            lastRotated: spend.windowStart,
-          },
-        },
-      });
+      await getNWCData();
     } catch (err) {
       console.error('Failed to store spend state', err);
     }
@@ -768,17 +776,23 @@ const handlePayInvoice = async (
   }
 
   const response = invoice.paymentResponse;
-  await new Promise(res => setTimeout(res, 1000));
-
-  const status = await wallet.NWCSparkLightningPaymentStatus(response.id);
-
   const spark = getSparkModule();
-  const paymentStatus = spark.getSparkPaymentStatus(
-    status?.paymentResponse?.status,
-  );
+
+  let status;
+  let paymentStatus;
+  for (let attempt = 0; attempt < PAYMENT_STATUS_POLLS; attempt++) {
+    await new Promise(res => setTimeout(res, 1000));
+    status = await wallet.NWCSparkLightningPaymentStatus(response.id);
+    paymentStatus = spark.getSparkPaymentStatus(
+      status?.paymentResponse?.status,
+    );
+    if (paymentStatus !== 'pending') break;
+  }
   const paymentPreimage = status?.paymentResponse?.paymentPreimage || '';
 
-  const feeMsat = response.fee?.originalValue || 0;
+  const feeMsat =
+    (response.fee?.originalValue || 0) *
+    (response.fee?.originalUnit === 'MILLISATOSHI' ? 1 : 1000);
 
   // Reconcile the reservation: release it entirely if the send failed,
   // otherwise settle it to the actual amount + fee.
@@ -800,6 +814,16 @@ const handlePayInvoice = async (
       'pay_invoice',
       ERROR_CODES.INTERNAL,
       'Unable to retrieve payment status',
+    );
+  }
+
+  // Only a completed payment is a success. A pending one keeps its marker and
+  // reservation; a retry or lookup_invoice resolves it later.
+  if (paymentStatus !== 'completed') {
+    return createErrorResponse(
+      'pay_invoice',
+      ERROR_CODES.INTERNAL,
+      paymentStatus === 'failed' ? 'Unable to send payment' : 'Payment pending',
     );
   }
 
@@ -883,7 +907,11 @@ const handleGetBalance = async selectedNWCAccount => {
   };
 };
 
-const processEvent = async (event, selectedNWCAccount, fullStorageObject) => {
+const processEvent = async (
+  event,
+  selectedNWCAccount,
+  { stale = false } = {},
+) => {
   const { requestMethod, requestParams } = event;
 
   console.log('request method', requestMethod);
@@ -944,8 +972,8 @@ const processEvent = async (event, selectedNWCAccount, fullStorageObject) => {
       returnObject = await handlePayInvoice(
         requestParams,
         selectedNWCAccount,
-        fullStorageObject,
         event.clientPubKey,
+        { stale },
       );
       break;
 
@@ -1273,18 +1301,11 @@ export default async function handleNWCBackgroundEvent(
           event.requestParams = parsedData.params;
           await nwcEventLedger.setMethod(event.id, parsedData.method);
 
-          const returnObject =
-            fromHandoff && isStaleHandoffPayment(event)
-              ? createErrorResponse(
-                  event.requestMethod,
-                  ERROR_CODES.OTHER,
-                  'Request expired',
-                )
-              : await processEvent(
-                  event,
-                  selectedNWCAccount,
-                  fullStorageObject,
-                );
+          // A stale handoff still runs the payment_hash lookup first: a
+          // native run may have paid it before being killed.
+          const returnObject = await processEvent(event, selectedNWCAccount, {
+            stale: fromHandoff && isStaleHandoffPayment(event),
+          });
           if (!returnObject) {
             await nwcEventLedger.markDone(event.id, Date.now());
             continue;
