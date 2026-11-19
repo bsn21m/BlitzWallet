@@ -191,7 +191,15 @@
     "weekly": "wöchentlich",
     "monthly": "monatlich",
     "yearly": "jährlich",
-    "noLimit": "Kein Limit"
+    "noLimit": "Kein Limit",
+    "minutesAgo_one": "vor {{count}} Minute",
+    "minutesAgo_other": "vor {{count}} Minuten",
+    "hoursAgo_one": "vor {{count}} Stunde",
+    "hoursAgo_other": "vor {{count}} Stunden",
+    "daysAgo_one": "vor {{count}} Tag",
+    "daysAgo_other": "vor {{count}} Tagen",
+    "yearsAgo_one": "vor {{count}} Jahr",
+    "yearsAgo_other": "vor {{count}} Jahren"
   },
   "transactionLabelText": {
     "notSent": "Zahlung nicht gesendet",
@@ -1193,7 +1201,6 @@
       "payment_other": "{{count}} Zahlungen",
       "closed": "Geschlossene Sparpools ",
       "pool": "Sparpools",
-      "couldNotFind": "Dieser Sparpool konnte nicht gefunden werden.",
       "createdBy": "Erstellt von ",
       "moneyTransferred": "Das Geld wurde an Ihre Haupt-Wallet übertragen.",
       "contribute": "Beitragen",
@@ -1216,7 +1223,6 @@
       "late_pool_contribution_label": "Verspäteter Beitrag zum Sparpool: „{{poolName}}“",
       "activitySection": "Aktivität",
       "active": "Aktive Sparpools",
-      "savingPoolError": "Dieser Sparpool konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
       "info": {
         "title": "Über Sparpools",
         "whatArePools": "Was sind Sparpools?",
@@ -1240,7 +1246,8 @@
       "savingPoolErrorTitle": "Sparpool konnte nicht erstellt werden",
       "savingPoolErrorSub": "Wir konnten diesen Sparpool nicht erstellen. Bitte versuchen Sie es erneut.",
       "viewActivityTitle": "Beiträge",
-      "activityInfoHeader": "{{numPeople}} Personen haben {{contributionAmount}} von {{totalAmount}} beigetragen.",
+      "activityInfoHeader_one": "{{numPeople}} Person hat {{contributionAmount}} von {{totalAmount}} beigetragen.",
+      "activityInfoHeader_other": "{{numPeople}} Personen haben {{contributionAmount}} von {{totalAmount}} beigetragen.",
       "closePoolLoadingTitle": "Sparpool wird geschlossen",
       "closePoolLoadingSub": "Lassen Sie die App geöffnet, bis der Vorgang abgeschlossen ist.",
       "poolGoal": "Sparpool-Ziel",
@@ -1658,7 +1665,8 @@
     },
     "internalComponents": {
       "addOrDeleteImageScreen": {
-        "pageMessage": "Möchten Sie {{option}} {{option2}} Foto"
+        "pageMessageHasImage": "Möchten Sie Ihr Foto ändern oder löschen?",
+        "pageMessageNoImage": "Möchten Sie ein Foto hinzufügen?"
       },
       "contactsTransactions": {
         "pushNotificationUpdateMessage": "{{name}} {{option}} Ihre Anfrage",
@@ -2253,6 +2261,7 @@
           "yearly": "pro Jahr"
         },
         "createdSubtitle": "Die App ist verbunden. Sie können jetzt zu ihr zurückkehren.",
+        "returnToApp": "{{name}} öffnen",
         "errorTitle": "Verbindung fehlgeschlagen",
         "errors": {
           "invalid": "Diese Verbindungsanfrage ist ungültig.",
@@ -3699,7 +3708,8 @@
     "appStore": "Shop",
     "contacts": "Kontakte",
     "money": "Geld",
-    "activity": "Aktivität"
+    "activity": "Aktivität",
+    "activityUnseen": "Aktivität, neue Zahlungen erhalten"
   },
   "pushNotifications": {
     "paymentReceived": {

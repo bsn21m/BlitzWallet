@@ -123,7 +123,7 @@
     "manage": "Emitidos",
     "reclaim": "Expirados",
     "optionalFlag": "(Opcional)",
-    "gift": "Cartão-presente",
+    "gift": "Vale-Blitz",
     "bitcoin_upper": "Bitcoin",
     "dollars_upper": "Dólares",
     "rate": "Cotação",
@@ -191,7 +191,15 @@
     "weekly": "Semanal",
     "monthly": "Mensal",
     "yearly": "Anual",
-    "noLimit": "Sem limite"
+    "noLimit": "Sem limite",
+    "minutesAgo_one": "há {{count}} minuto",
+    "minutesAgo_other": "há {{count}} minutos",
+    "hoursAgo_one": "há {{count}} hora",
+    "hoursAgo_other": "há {{count}} horas",
+    "daysAgo_one": "há {{count}} dia",
+    "daysAgo_other": "há {{count}} dias",
+    "yearsAgo_one": "há {{count}} ano",
+    "yearsAgo_other": "há {{count}} anos"
   },
   "transactionLabelText": {
     "notSent": "Pagamento não enviado",
@@ -1193,7 +1201,6 @@
       "payment_other": "{{count}} pagamentos",
       "closed": "Encerrada ",
       "pool": "Pool",
-      "couldNotFind": "Não foi possível encontrar esta Vaquinha.",
       "createdBy": "Por ",
       "moneyTransferred": "Fundos transferidos para a conta principal",
       "contribute": "Contribuir",
@@ -1216,7 +1223,6 @@
       "late_pool_contribution_label": "Contribuição tardia para \"{{poolName}}\"",
       "activitySection": "Atividade",
       "active": "Abertas",
-      "savingPoolError": "Não foi possível criar esta Vaquinha. Tente novamente.",
       "info": {
         "title": "Entendendo as Vaquinhas",
         "whatArePools": "O que são Vaquinhas?",
@@ -1240,7 +1246,8 @@
       "savingPoolErrorTitle": "Não foi possível criar a Vaquinha",
       "savingPoolErrorSub": "Não foi possível criar esta Vaquinha. Tente novamente.",
       "viewActivityTitle": "Contribuições",
-      "activityInfoHeader": "{{numPeople}} pessoas pagaram {{contributionAmount}} de {{totalAmount}}.",
+      "activityInfoHeader_one": "{{numPeople}} pessoa pagou {{contributionAmount}} de {{totalAmount}}.",
+      "activityInfoHeader_other": "{{numPeople}} pessoas pagaram {{contributionAmount}} de {{totalAmount}}.",
       "closePoolLoadingTitle": "Encerrando Vaquinha",
       "closePoolLoadingSub": "Mantenha o app aberto até terminar.",
       "poolGoal": "Objetivo da Vaquinha",
@@ -1405,7 +1412,7 @@
         "verifiedBody": "A Branta verificou que esta solicitação de pagamento realmente vem de {{merchantName}}, para você saber para quem está pagando.",
         "verifiedBodyNoName": "A Branta verificou que esta solicitação de pagamento é autêntica, para você saber para quem está pagando.",
         "checkAddress": "Verifique se corresponde ao que você recebeu.",
-        "checkAddress_receive": "Verifique se corresponde à que você compartilhou."
+        "checkAddress_receive": "Verifique se corresponde com o endereço compartilhado."
       }
     },
     "switchOption": {
@@ -1658,7 +1665,8 @@
     },
     "internalComponents": {
       "addOrDeleteImageScreen": {
-        "pageMessage": "Você deseja a {{option}} {{option2}} da foto"
+        "pageMessageHasImage": "Você deseja alterar ou excluir sua foto?",
+        "pageMessageNoImage": "Você deseja adicionar uma foto?"
       },
       "contactsTransactions": {
         "pushNotificationUpdateMessage": "{{name}} {{option}} seu pedido",
@@ -2253,6 +2261,7 @@
           "yearly": "por ano"
         },
         "createdSubtitle": "O app está conectado. Você já pode voltar para ele.",
+        "returnToApp": "Voltar para {{name}}",
         "errorTitle": "Não foi possível conectar",
         "errors": {
           "invalid": "Este pedido de conexão não é válido.",
@@ -3699,7 +3708,8 @@
     "appStore": "Loja",
     "contacts": "Contatos",
     "money": "Dinheiro",
-    "activity": "Atividade"
+    "activity": "Atividade",
+    "activityUnseen": "Atividade, novos pagamentos recebidos"
   },
   "pushNotifications": {
     "paymentReceived": {
@@ -4121,7 +4131,7 @@
   },
   "receive": {
     "requestFromContact": "Solicitar de um contato",
-    "fromAnotherWallet": "Receber de outra carteira ou exchange",
+    "fromAnotherWallet": "Receber de outra carteira ou corretora",
     "emptyTitle": "Receba pagamentos de pessoas que você conhece",
     "emptySub": "Adicione um contato para solicitar dinheiro a ele. Os contatos que você adicionar aparecerão aqui.",
     "addContact": "Adicionar contato",
@@ -4159,10 +4169,10 @@
     "anyAmountSub": "O remetente escolhe quanto pagar.",
     "arrivesAsDollars": "Chega como dólares",
     "conversionNote": "O valor final pode variar um pouco conforme o preço durante a conversão.",
-    "whatFor": "Para que serve",
+    "whatFor": "Adicione uma descrição",
     "share": "Compartilhar",
     "address_share_bitcoin": "Endereço Bitcoin",
-    "address_share_stablecoin": "Endereço de stablecoin",
+    "address_share_stablecoin": "Endereço Dólar Digital",
     "address_share_tokens": "Endereço de tokens",
     "address_share_lightningAddress": "Endereço Lightning",
     "address_share_lightningInvoice": "Fatura Lightning"

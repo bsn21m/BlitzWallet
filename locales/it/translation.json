@@ -191,7 +191,15 @@
     "weekly": "Settimanale",
     "monthly": "Mensile",
     "yearly": "Annuale",
-    "noLimit": "Senza limite"
+    "noLimit": "Senza limite",
+    "minutesAgo_one": "{{count}} minuto fa",
+    "minutesAgo_other": "{{count}} minuti fa",
+    "hoursAgo_one": "{{count}} ora fa",
+    "hoursAgo_other": "{{count}} ore fa",
+    "daysAgo_one": "{{count}} giorno fa",
+    "daysAgo_other": "{{count}} giorni fa",
+    "yearsAgo_one": "{{count}} anno fa",
+    "yearsAgo_other": "{{count}} anni fa"
   },
   "transactionLabelText": {
     "notSent": "Pagamento non inviato",
@@ -1193,7 +1201,6 @@
       "payment_other": "{{count}} pagamenti",
       "closed": "Chiuso ",
       "pool": "Pool",
-      "couldNotFind": "Non siamo riusciti a trovare questo pool.",
       "createdBy": "Da ",
       "moneyTransferred": "Fondi trasferiti al wallet principale",
       "contribute": "Contribuisci",
@@ -1216,7 +1223,6 @@
       "late_pool_contribution_label": "Contributo tardivo a \"{{poolName}}\"",
       "activitySection": "Attività",
       "active": "Attivo",
-      "savingPoolError": "Non è stato possibile creare questo pool. Riprova.",
       "info": {
         "title": "Informazioni sui pool",
         "whatArePools": "Cosa sono i pool?",
@@ -1240,7 +1246,8 @@
       "savingPoolErrorTitle": "Impossibile creare il pool",
       "savingPoolErrorSub": "Non siamo riusciti a creare questo pool. Riprova.",
       "viewActivityTitle": "Contributi",
-      "activityInfoHeader": "{{numPeople}} persone hanno pagato {{contributionAmount}} su {{totalAmount}}.",
+      "activityInfoHeader_one": "{{numPeople}} persona ha pagato {{contributionAmount}} su {{totalAmount}}.",
+      "activityInfoHeader_other": "{{numPeople}} persone hanno pagato {{contributionAmount}} su {{totalAmount}}.",
       "closePoolLoadingTitle": "Chiusura del pool",
       "closePoolLoadingSub": "Tieni l'app aperta finché non è terminato.",
       "poolGoal": "Obiettivo del pool",
@@ -1658,7 +1665,8 @@
     },
     "internalComponents": {
       "addOrDeleteImageScreen": {
-        "pageMessage": "Vuoi {{option}} {{option2}} foto"
+        "pageMessageHasImage": "Vuoi cambiare o eliminare la tua foto?",
+        "pageMessageNoImage": "Vuoi aggiungere una foto?"
       },
       "contactsTransactions": {
         "pushNotificationUpdateMessage": "{{name}} {{option}} la tua richiesta",
@@ -2253,6 +2261,7 @@
           "yearly": "all'anno"
         },
         "createdSubtitle": "L'app è connessa. Ora puoi tornare ad essa.",
+        "returnToApp": "Torna a {{name}}",
         "errorTitle": "Connessione non riuscita",
         "errors": {
           "invalid": "Questa richiesta di connessione non è valida.",
@@ -3699,7 +3708,8 @@
     "appStore": "Negozio",
     "contacts": "Contatti",
     "money": "Denaro",
-    "activity": "Attività"
+    "activity": "Attività",
+    "activityUnseen": "Attività, nuovi pagamenti ricevuti"
   },
   "pushNotifications": {
     "paymentReceived": {
