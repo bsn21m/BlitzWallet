@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import Animated, { LinearTransition } from 'react-native-reanimated';
+import { useReducedMotion } from '../../../../constants/motion';
 import { MAX_WEB_CONTENT_WIDTH } from '../../../../constants';
 import {
   GlobalThemeView,
@@ -17,8 +18,10 @@ import SectionHeader from '../../../../functions/CustomElements/redesign/Section
 import ListCard from '../../../../functions/CustomElements/redesign/ListCard';
 import ListRow from '../../../../functions/CustomElements/redesign/ListRow';
 import KeyValueRow from '../../../../functions/CustomElements/redesign/KeyValueRow';
+import { FADE_TOP } from '../../../../functions/CustomElements/redesign/TopFade';
 
 export default function SparkInfo() {
+  const reduced = useReducedMotion();
   const navigate = useNavigation();
   const { toggleMasterInfoObject, masterInfoObject } =
     useGlobalContextProvider();
@@ -66,10 +69,12 @@ export default function SparkInfo() {
   return (
     <GlobalThemeView useStandardWidth={true}>
       <View style={[styles.content, { width: contentWidth }]}>
-        <TopBar title={t('screens.inAccount.settingsContent.spark info')} />
+        <TopBar
+          fade
+          title={t('screens.inAccount.settingsContent.spark info')}
+        />
         <CustomScrollView
           style={styles.scroll}
-          showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
           <SectionHeader first title={t('settings.sparkInfo.title')} />
@@ -111,7 +116,7 @@ export default function SparkInfo() {
             {showTokensInformation && (
               <Animated.View
                 key="default-token"
-                layout={LinearTransition.duration(200)}
+                layout={reduced ? undefined : LinearTransition.duration(200)}
               >
                 <ListRow
                   title={t('settings.sparkLrc20.selectTokenHeader')}
@@ -140,7 +145,7 @@ export default function SparkInfo() {
 const styles = StyleSheet.create({
   content: { alignSelf: 'center', flex: 1 },
   scroll: { flex: 1 },
-  scrollContent: { paddingBottom: 40 },
+  scrollContent: { paddingTop: FADE_TOP, paddingBottom: 40 },
   infoCard: { marginVertical: 6 },
   rowTitle: { fontSize: 15, lineHeight: 21 },
   note: { marginTop: 8, marginHorizontal: 4 },

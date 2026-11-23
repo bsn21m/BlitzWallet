@@ -1588,6 +1588,7 @@
       "invalidCharactersError": "Tur ak bio mënuñu am araf yii: < > { } ` \\",
       "invalidReceiveAddressError": "Bindal adreesu Lightning bu baax (misaal: user@domain.com)",
       "aboutYou": "Ci sa mbir",
+      "receiveCurrencyPreference": "Xeetu xaalis bi nga gën a bëgg",
       "lightningAddress": "Adreesu Lightning",
       "addContactLightningAddress": "Adreesu Lightning",
       "share": "Séddoo",
@@ -1604,9 +1605,8 @@
     "remotePaymentCurrencySelect": {
       "title": "Xaalis bi ngay jot",
       "description": "Tànnal naka ngay jote fey yu sa jokkoo yi ak sa adreesu Lightning.",
+      "subAccountDescription": "Tànnal naka ngay jote fey yu ñëw ci sa adreesu Lightning.",
       "futurePaymentsMessage": "Jot ci {{option}}",
-      "arriveAsSats": "Fey yi dañuy ñëw ci sats",
-      "arriveAsDollars": "Fey yi dañuy ñëw ci dolaar",
       "warningMessage": "Fey yu gën a tuuti {{amount}} dañuy ñëw ci Bitcoin.",
       "changeSelectionError": "{{option}} tànn nañu ko ba noppi. Soppil sa tànn ngir yeesal sa tànneef."
     },

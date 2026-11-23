@@ -1595,6 +1595,7 @@
       "invalidCharactersError": "Имя и био не могут содержать символы < > { } ` \\",
       "invalidReceiveAddressError": "Введите корректный адрес Молнии (например, user@domain.com)",
       "aboutYou": "О вас",
+      "receiveCurrencyPreference": "Предпочитаемая валюта",
       "lightningAddress": "Lightning-адрес",
       "addContactLightningAddress": "Lightning-адрес",
       "deleteContact": "Удалить контакт",
@@ -1614,11 +1615,10 @@
     "remotePaymentCurrencySelect": {
       "title": "Валюта получения",
       "description": "Выберите, как получать платежи от контактов и на ваш Lightning-адрес.",
+      "subAccountDescription": "Выберите, как получать платежи на ваш Lightning-адрес.",
       "futurePaymentsMessage": "Все будущие платежи будут получены в {{option}}",
       "warningMessage": "Платежи меньше {{amount}} по-прежнему приходят в Bitcoin.",
-      "changeSelectionError": "{{option}} уже выбрано. Измените выбор, чтобы обновить настройку.",
-      "arriveAsSats": "Платежи поступают в сатах",
-      "arriveAsDollars": "Платежи поступают в долларах"
+      "changeSelectionError": "{{option}} уже выбрано. Измените выбор, чтобы обновить настройку."
     },
     "selectCurrencyToSend": {
       "header": "Что вы хотите отправить?"

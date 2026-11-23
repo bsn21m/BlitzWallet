@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { InputTypes } from 'bitcoin-address-parser';
 import {
+  AMOUNT_HERO_SIZE,
   CENTER,
   CONTENT_KEYBOARD_OFFSET,
   QUICK_PAY_STORAGE_KEY,
@@ -51,6 +52,8 @@ import {
   formatSecondaryText,
 } from './functions/formatSendText';
 import useBlockSendDuringExit from '../../../../functions/unilateralExit/useBlockSendDuringExit';
+import BottomActions from '../../../../functions/CustomElements/redesign/BottomActions';
+import { FADE } from '../../../../functions/CustomElements/redesign/BottomFade';
 
 // Route SendReview: shows a prepared payment and sends it.
 export default function SendReviewScreen(props) {
@@ -60,6 +63,7 @@ export default function SendReviewScreen(props) {
   const params = props.route.params;
   const {
     fromPage,
+    deeplinkOrigin,
     publishMessageFunc,
     paymentInfo,
     enteredPaymentInfo = {},
@@ -160,8 +164,10 @@ export default function SendReviewScreen(props) {
     };
   }, []);
 
-  // Fast pay logic
+  // Fast pay logic. Never for a payment a deep link delivered: arriving from
+  // outside the app is not the user asking for this payment to be spent.
   const canUseFastPay =
+    !deeplinkOrigin &&
     sparkInformation.didConnect &&
     Object.keys(paymentInfo || {}).length > 0 &&
     masterInfoObject[QUICK_PAY_STORAGE_KEY]?.isFastPayEnabled &&
@@ -654,7 +660,7 @@ export default function SendReviewScreen(props) {
                 <AmountHero
                   amount={amountText}
                   formatAmount={false}
-                  amountSize={60}
+                  amountSize={AMOUNT_HERO_SIZE.primary}
                 />
                 {!!secondaryText && (
                   <ThemeText
@@ -696,41 +702,44 @@ export default function SendReviewScreen(props) {
           )}
         </CustomScrollView>
 
-        {uiState === 'SWAP_RATES_CHANGED' ? (
-          <CustomButton
-            size="regular"
-            buttonStyles={styles.rateButton}
-            actionFunction={handleRateChangedReset}
-            textContent={t(
-              'wallet.sendPages.sendPaymentScreen.swapRatesChangedButton',
-            )}
-          />
-        ) : (
-          <View style={styles.buttonContainer}>
-            {showProgressAnimation || isUsingFastPay ? (
-              <SliderProgressAnimation
-                ref={progressAnimationRef}
-                isVisible={showProgressAnimation || isUsingFastPay}
-                textColor={tokens.onAccent}
-                backgroundColor={tokens.accent}
-                width={1}
-              />
-            ) : (
-              <SwipeButtonNew
-                variant="redesign"
-                title={t('wallet.sendPages.reviewParts.slideToSend')}
-                onSwipeSuccess={handleSwipe}
-                resetAfterSuccessAnimDuration={true}
-                shouldResetAfterSuccess={
-                  !canSendPayment || (shouldWarn && !didWarnAboutBudget.current)
-                }
-                containerStyles={{
-                  opacity: canSendPayment ? 1 : HIDDEN_OPACITY,
-                }}
-              />
-            )}
-          </View>
-        )}
+        <BottomActions>
+          {uiState === 'SWAP_RATES_CHANGED' ? (
+            <CustomButton
+              size="regular"
+              buttonStyles={styles.rateButton}
+              actionFunction={handleRateChangedReset}
+              textContent={t(
+                'wallet.sendPages.sendPaymentScreen.swapRatesChangedButton',
+              )}
+            />
+          ) : (
+            <View style={styles.buttonContainer}>
+              {showProgressAnimation || isUsingFastPay ? (
+                <SliderProgressAnimation
+                  ref={progressAnimationRef}
+                  isVisible={showProgressAnimation || isUsingFastPay}
+                  textColor={tokens.onAccent}
+                  backgroundColor={tokens.accent}
+                  width={1}
+                />
+              ) : (
+                <SwipeButtonNew
+                  variant="redesign"
+                  title={t('wallet.sendPages.reviewParts.slideToSend')}
+                  onSwipeSuccess={handleSwipe}
+                  resetAfterSuccessAnimDuration={true}
+                  shouldResetAfterSuccess={
+                    !canSendPayment ||
+                    (shouldWarn && !didWarnAboutBudget.current)
+                  }
+                  containerStyles={{
+                    opacity: canSendPayment ? 1 : HIDDEN_OPACITY,
+                  }}
+                />
+              )}
+            </View>
+          )}
+        </BottomActions>
       </View>
     </CustomKeyboardAvoidingView>
   );
@@ -741,8 +750,8 @@ const styles = StyleSheet.create({
     flex: 1,
     ...CENTER,
   },
-  scrollContainer: { flexGrow: 1, paddingTop: 86 },
-  swapContainer: { flexGrow: 1, paddingTop: 132 },
+  scrollContainer: { flexGrow: 1, paddingTop: 86, paddingBottom: FADE },
+  swapContainer: { flexGrow: 1, paddingTop: 132, paddingBottom: FADE },
   hero: { alignItems: 'center' },
   secondary: { marginTop: 4 },
   card: { marginTop: 48 },

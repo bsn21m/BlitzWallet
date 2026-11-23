@@ -50,7 +50,6 @@ function LeadIcon({ icon }) {
 
 export default function AboutPage() {
   const { t } = useTranslation();
-  const { tokens } = useTheme();
   const navigate = useNavigation();
   const { width } = useWindowDimensions();
   const contentWidth = Math.min(width, MAX_WEB_CONTENT_WIDTH) - 40;
@@ -68,9 +67,9 @@ export default function AboutPage() {
   return (
     <GlobalThemeView useStandardWidth={true}>
       <View style={[styles.content, { width: contentWidth }]}>
+        <TopBar fade title={t('screens.inAccount.settingsContent.about')} />
         <CustomScrollView
           style={styles.scroll}
-          showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
           <SectionHeader first title={t('settings.about.licenseHeader')} />
@@ -248,11 +247,6 @@ export default function AboutPage() {
             </View>
           </Card>
         </CustomScrollView>
-        <View
-          style={[styles.topBarOverlay, { backgroundColor: tokens.ground }]}
-        >
-          <TopBar title={t('screens.inAccount.settingsContent.about')} />
-        </View>
       </View>
     </GlobalThemeView>
   );
@@ -260,7 +254,6 @@ export default function AboutPage() {
 
 const styles = StyleSheet.create({
   content: { alignSelf: 'center', flex: 1 },
-  topBarOverlay: { position: 'absolute', top: 0, left: 0, right: 0 },
   scroll: { flex: 1 },
   scrollContent: { paddingTop: 44, paddingBottom: 40 },
   card: {

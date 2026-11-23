@@ -10,6 +10,7 @@ import {
 import { ThemeText } from '../../../../functions/CustomElements';
 import GetThemeColors from '../../../../hooks/themeColors';
 import {
+  AMOUNT_HERO_SIZE,
   STARTING_INDEX_FOR_SAVINGS_DERIVE,
   USDB_TOKEN_ID,
 } from '../../../../constants';
@@ -940,10 +941,7 @@ export default function WithdrawFromSavingsHalfModal({
       <>
         {backBar}
         <SheetHeader title={t('savings.withdraw.chooseGoalTitle')} />
-        <CustomScrollView
-          style={styles.list}
-          showsVerticalScrollIndicator={false}
-        >
+        <CustomScrollView style={styles.list}>
           <ListCard tone="flush">
             {/* Withdraw All — drains the entire savings wallet in one action */}
             {shouldShowWithdrawlAll &&
@@ -1042,7 +1040,7 @@ export default function WithdrawFromSavingsHalfModal({
             forceCurrency={primaryDisplay.forceCurrency}
             convertAmount={false}
             mutedValue={!Number(amountValue)}
-            amountSize={52}
+            amountSize={AMOUNT_HERO_SIZE.sheet}
           />
           <ThemeText
             styles={[styles.hint, { color: tokens.muted }]}
@@ -1167,7 +1165,10 @@ export default function WithdrawFromSavingsHalfModal({
           sub={confirmDescription}
         />
         <View style={styles.confirmAmount}>
-          <AmountHero {...withdrawAmountProps} amountSize={52} />
+          <AmountHero
+            {...withdrawAmountProps}
+            amountSize={AMOUNT_HERO_SIZE.sheet}
+          />
         </View>
         <CustomButton
           buttonStyles={styles.bottomButton}

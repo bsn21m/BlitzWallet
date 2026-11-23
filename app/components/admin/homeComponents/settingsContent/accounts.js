@@ -21,6 +21,10 @@ import IconButton from '../../../../functions/CustomElements/redesign/IconButton
 import Segmented from '../../../../functions/CustomElements/redesign/Segmented';
 import EmptyState from '../../../../functions/CustomElements/redesign/EmptyState';
 import ListCard from '../../../../functions/CustomElements/redesign/ListCard';
+import BottomActions from '../../../../functions/CustomElements/redesign/BottomActions';
+import { FADE } from '../../../../functions/CustomElements/redesign/BottomFade';
+import TopHeader from '../../../../functions/CustomElements/redesign/TopHeader';
+import { FADE_TOP } from '../../../../functions/CustomElements/redesign/TopFade';
 
 export default function CreateCustodyAccounts() {
   const navigate = useNavigation();
@@ -97,46 +101,46 @@ export default function CreateCustodyAccounts() {
   return (
     <GlobalThemeView useStandardWidth={true}>
       <View style={[styles.container, { width: contentWidth }]}>
-        <TopBar
-          title={t('constants.accounts')}
-          right={
-            !masterInfoObject.isChildAccount ? (
-              <IconButton
-                icon={'Info'}
-                label={
-                  isLinked
-                    ? 'settings.accounts.linkedInfo.title'
-                    : 'settings.accounts.personalInfo.title'
-                }
-                onPress={handleAboutClick}
+        <TopHeader overlap={false}>
+          <TopBar
+            title={t('constants.accounts')}
+            right={
+              !masterInfoObject.isChildAccount ? (
+                <IconButton
+                  icon={'Info'}
+                  label={
+                    isLinked
+                      ? 'settings.accounts.linkedInfo.title'
+                      : 'settings.accounts.personalInfo.title'
+                  }
+                  onPress={handleAboutClick}
+                />
+              ) : undefined
+            }
+          />
+          {!masterInfoObject.isChildAccount && (
+            <View style={styles.toggleWrap}>
+              <Segmented
+                fit
+                options={[
+                  {
+                    value: 'personal',
+                    label: t('settings.accounts.tabs.personal'),
+                  },
+                  {
+                    value: 'linked',
+                    label: t('settings.accounts.tabs.linked'),
+                  },
+                ]}
+                value={activeTab}
+                onChange={setActiveTab}
               />
-            ) : undefined
-          }
-        />
-
-        {!masterInfoObject.isChildAccount && (
-          <View style={styles.toggleWrap}>
-            <Segmented
-              fit
-              options={[
-                {
-                  value: 'personal',
-                  label: t('settings.accounts.tabs.personal'),
-                },
-                {
-                  value: 'linked',
-                  label: t('settings.accounts.tabs.linked'),
-                },
-              ]}
-              value={activeTab}
-              onChange={setActiveTab}
-            />
-          </View>
-        )}
+            </View>
+          )}
+        </TopHeader>
         <CustomScrollView
           style={styles.scrollContainer}
           contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
         >
           {activeAccounts.length > 0 ? (
             <ListCard>
@@ -170,14 +174,16 @@ export default function CreateCustodyAccounts() {
         </CustomScrollView>
 
         {!masterInfoObject.isChildAccount && (
-          <CustomButton
-            actionFunction={handleNavigateAddAccount}
-            textContent={t(
-              'settings.accountComponents.selectCreateAccountType.title',
-            )}
-            size={'regular'}
-            buttonStyles={styles.button}
-          />
+          <BottomActions>
+            <CustomButton
+              actionFunction={handleNavigateAddAccount}
+              textContent={t(
+                'settings.accountComponents.selectCreateAccountType.title',
+              )}
+              size={'regular'}
+              buttonStyles={styles.button}
+            />
+          </BottomActions>
         )}
       </View>
     </GlobalThemeView>
@@ -191,10 +197,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   scrollContainer: {
-    marginTop: 20,
+    marginTop: CONTENT_KEYBOARD_OFFSET,
   },
   scrollContent: {
     flexGrow: 1,
+    paddingBottom: FADE,
   },
   emptyContainer: {
     flex: 1,

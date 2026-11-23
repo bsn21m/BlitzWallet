@@ -1,9 +1,10 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
+import { useReducedMotion, enterAnim } from '../../../../constants/motion';
 import GetThemeColors from '../../../../hooks/themeColors';
 import ThemeIcon from '../../../../functions/CustomElements/themeIcon';
 import { ThemeText } from '../../../../functions/CustomElements';
-import { FONT, HIDDEN_BALANCE_CLOSE } from '../../../../constants';
+import { CARD_RADIUS, FONT, HIDDEN_BALANCE_CLOSE } from '../../../../constants';
 import CurrencyIcon from '../../../../functions/CustomElements/redesign/CurrencyIcon';
 import SkeletonBar from '../../../../functions/CustomElements/redesign/SkeletonBar';
 import { splitAmountUnit } from '../../../../functions/CustomElements/redesign/AmountHero';
@@ -49,6 +50,7 @@ export default function BalanceCard({
   isHidden = false,
   isLoading = false,
 }) {
+  const reduced = useReducedMotion();
   const { tokens } = GetThemeColors();
   const unitMatch = splitAmountUnit(amount);
 
@@ -86,7 +88,7 @@ export default function BalanceCard({
         ) : (
           <Animated.View
             key={isHidden ? 'hidden' : 'shown'}
-            entering={FadeIn.duration(150).delay(40)}
+            entering={enterAnim(FadeIn.duration(150).delay(40), reduced)}
           >
             <ThemeText
               CustomNumberOfLines={1}
@@ -118,7 +120,7 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     minHeight: 152,
-    borderRadius: 24,
+    borderRadius: CARD_RADIUS,
     padding: 18,
     justifyContent: 'space-between',
   },

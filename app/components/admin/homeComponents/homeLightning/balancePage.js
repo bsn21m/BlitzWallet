@@ -3,7 +3,11 @@ import {
   GlobalThemeView,
   ThemeText,
 } from '../../../../functions/CustomElements';
-import { CENTER, MAX_WEB_CONTENT_WIDTH } from '../../../../constants';
+import {
+  AMOUNT_HERO_SIZE,
+  CENTER,
+  MAX_WEB_CONTENT_WIDTH,
+} from '../../../../constants';
 import TopBar from '../../../../functions/CustomElements/redesign/TopBar';
 import { useTranslation } from 'react-i18next';
 import { useNodeContext } from '../../../../../context-store/nodeContext';
@@ -15,6 +19,7 @@ import { getAssetBalanceText } from './balanceCard';
 import BalanceActions from './balanceActions';
 import ActivityCard from './activityCard';
 import { useGlobalInsets } from '../../../../../context-store/insetsProvider';
+import { FADE_TOP } from '../../../../functions/CustomElements/redesign/TopFade';
 
 export default function BalancePage(props) {
   const { asset } = props?.route?.params;
@@ -34,9 +39,10 @@ export default function BalancePage(props) {
     <GlobalThemeView styles={styles.page} useStandardWidth={true}>
       <View style={[styles.container, { width: contentWidth }]}>
         <TopBar
+          fade
           title={t(`constants.${isBitcoin ? 'bitcoin' : 'dollars'}_upper`)}
         />
-        <CustomScrollView showsVerticalScrollIndicator={false}>
+        <CustomScrollView contentContainerStyle={styles.scrollContent}>
           <ThemeText
             content={t('constants.balance')}
             variant={'hint'}
@@ -51,7 +57,7 @@ export default function BalancePage(props) {
                 masterInfoObject,
                 fiatStats,
               })}
-              amountSize={60}
+              amountSize={AMOUNT_HERO_SIZE.primary}
               isHidden={masterInfoObject.userBalanceDenomination === 'hidden'}
             />
           </View>
@@ -93,7 +99,8 @@ const styles = StyleSheet.create({
   page: { paddingBottom: 0 },
   container: { flex: 1, ...CENTER, paddingTop: 7 },
   hero: { alignItems: 'flex-start', minHeight: 84, justifyContent: 'center' },
-  label: { marginTop: 56, fontSize: 14 },
+  scrollContent: { paddingTop: FADE_TOP },
+  label: { marginTop: 16, fontSize: 14 },
   buttons: { marginTop: 24 },
   activity: { marginTop: 36 },
 });
