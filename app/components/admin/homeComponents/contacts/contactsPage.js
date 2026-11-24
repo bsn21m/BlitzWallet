@@ -362,6 +362,8 @@ const ContactElement = memo(
         sub={`${
           contact.isLNURL ? contact.receiveAddress : '@' + contact.uniqueName
         }`}
+        subLines={1}
+        subEllipsizeMode="middle"
         trailing={
           hasUnlookedTransaction && (
             <View
@@ -386,11 +388,10 @@ const LIST_DIVIDER_INSET = 68;
 const memoizedStyles = StyleSheet.create({
   container: { flex: 1, ...CENTER },
   header: {
-    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    minHeight: 45,
+    minHeight: 44,
   },
   headerButtons: {
     flexDirection: 'row',

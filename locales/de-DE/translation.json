@@ -1374,7 +1374,11 @@
       "feeInfo": {
         "title": "Gebühr und Geschwindigkeit",
         "backTextToAmount": "{{amount}}",
-        "tenMinutes": "{{numMins}} Minuten"
+        "tenMinutes": "{{numMins}} Minuten",
+        "changeSpeedTitle": "Zahlungsgeschwindigkeit ändern",
+        "fast": "Schnell",
+        "medium": "Mittel",
+        "slow": "Langsam"
       },
       "selectLRC20Token": {
         "title": "Token auswählen",
@@ -2938,6 +2942,7 @@
         "confirmMessage": "{{direction}} erfolgreich",
         "bulkSuccess": "Anfragen erfolgreich gesendet",
         "bulkPartialSuccess": "Keine Anfragen gesendet",
+        "splitPartialFailure": "Nicht alle in dieser Aufteilung wurden bezahlt. Einige Zahlungen sind fehlgeschlagen oder konnten nicht bestätigt werden. Prüfe deine Aktivität, bevor du sie erneut sendest.",
         "stablecoinDesc": "{{asset}} auf {{chain}}",
         "failedPaymentSupportSubject": "Support bei fehlgeschlagener Zahlung"
       },

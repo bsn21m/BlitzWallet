@@ -15,7 +15,7 @@ import { useGlobalContextProvider } from '../../../../../context-store/context';
 import { useUserBalanceContext } from '../../../../../context-store/userBalanceContext';
 import AmountHero from '../../../../functions/CustomElements/redesign/AmountHero';
 import CustomScrollView from '../../../../functions/CustomElements/scrollView';
-import { getAssetBalanceText } from './balanceCard';
+import { getAssetBalanceText, isDollarDust } from './balanceCard';
 import BalanceActions from './balanceActions';
 import ActivityCard from './activityCard';
 import { useGlobalInsets } from '../../../../../context-store/insetsProvider';
@@ -56,7 +56,9 @@ export default function BalancePage(props) {
                 amount: balance,
                 masterInfoObject,
                 fiatStats,
+                roundUpDust: true,
               })}
+              isDust={!isBitcoin && isDollarDust(balance)}
               amountSize={AMOUNT_HERO_SIZE.primary}
               isHidden={masterInfoObject.userBalanceDenomination === 'hidden'}
             />
@@ -97,7 +99,7 @@ export default function BalancePage(props) {
 
 const styles = StyleSheet.create({
   page: { paddingBottom: 0 },
-  container: { flex: 1, ...CENTER, paddingTop: 7 },
+  container: { flex: 1, ...CENTER },
   hero: { alignItems: 'flex-start', minHeight: 84, justifyContent: 'center' },
   scrollContent: { paddingTop: FADE_TOP },
   label: { marginTop: 16, fontSize: 14 },

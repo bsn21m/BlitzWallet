@@ -356,8 +356,7 @@ const styles = StyleSheet.create({
   container: { paddingBottom: 0 },
   content: { alignSelf: 'center', width: '100%', flex: 1 },
   header: {
-    marginTop: 10,
-    minHeight: 45,
+    minHeight: 44,
     justifyContent: 'center',
   },
   spentCard: { borderRadius: CARD_RADIUS, padding: 20 },

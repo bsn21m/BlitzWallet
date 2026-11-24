@@ -147,8 +147,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    marginTop: 10,
-    minHeight: 45,
+    minHeight: 44,
     justifyContent: 'center',
   },
   card: { marginTop: 12 },
